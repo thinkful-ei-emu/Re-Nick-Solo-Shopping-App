@@ -56,7 +56,7 @@ function renderShoppingList() {
 }
 
 function addItemToShoppingList(itemName) {
-  STORE.items.push({id: cuid(), name: itemName, checked:false});
+  STORE.items.push({id: cuid(), name: itemName, checked:false, searched: false});
 }
 
 function handleNewItemSubmit() {
@@ -116,11 +116,27 @@ function handleToggleHideFilter(){
   });
 }
 
+
+function clearSearch(){
+  $('#js-reset-search').submit(event => {
+    event.preventDefault();
+    $('.js-search-form').val('');
+    for (let i = 0; i < STORE.items.length; i++){
+      STORE.items[i].searched = false;
+      console.log(STORE.items);
+    }
+    renderShoppingList();
+  });
+}
+
+
 function searchHandler(){
   $('#js-search-form').submit(event => {
     event.preventDefault();
+
     let searchTerm = $('.js-search-form').val();
-    $('.js-search-form').val('');
+    // $('.js-search-form').val('');
+    
     for (let i = 0; i < STORE.items.length; i++){
       if (searchTerm === STORE.items[i].name){
         STORE.items[i].searched = true;
@@ -129,7 +145,18 @@ function searchHandler(){
     }
     renderShoppingList();
   });
+  // for (let i = 0; i < STORE.items.length; i++){
+  //   for (let j = 0; j < STORE.items[i].name.length; j++){
+  //     if (searchTerm.includes(STORE.items[i].name.charAt(j))){
+  //       STORE.items[i].searched =  true;
+  //       console.log(STORE.items);
+  //     }
+    
+  //   }  trying to search by part of a word here ^
+  // }
+  renderShoppingList();
 }
+
 
 
 
@@ -145,6 +172,7 @@ function handleShoppingList() {
   handleDeleteItemClicked();
   handleToggleHideFilter();
   searchHandler();
+  clearSearch();
 }
 
 // when the page loads, call `handleShoppingList`
