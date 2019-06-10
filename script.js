@@ -24,6 +24,9 @@ function generateItemElement(item) {
         <button class="shopping-item-delete js-item-delete">
             <span class="button-label">delete</span>
         </button>
+        <button class="shopping-item-edit js-item-edit">
+          <span class="button-label">edit</span>
+        </button>
       </div>
     </li>`;
 }
@@ -135,28 +138,36 @@ function searchHandler(){
     event.preventDefault();
 
     let searchTerm = $('.js-search-form').val();
-    // $('.js-search-form').val('');
     
     for (let i = 0; i < STORE.items.length; i++){
-      if (searchTerm === STORE.items[i].name){
+      if (STORE.items[i].name.indexOf(searchTerm) >= 0){
         STORE.items[i].searched = true;
         console.log(STORE.items);
       }
     }
     renderShoppingList();
   });
-  // for (let i = 0; i < STORE.items.length; i++){
-  //   for (let j = 0; j < STORE.items[i].name.length; j++){
-  //     if (searchTerm.includes(STORE.items[i].name.charAt(j))){
-  //       STORE.items[i].searched =  true;
-  //       console.log(STORE.items);
-  //     }
-    
-  //   }  trying to search by part of a word here ^
-  // }
   renderShoppingList();
 }
 
+
+function changeName(itemId, newName){
+  const item = STORE.items.find(item => itemId === item.id);
+  item.name = newName;
+}
+
+
+function editItemName(){
+  $('.js-shopping-list').on('click', '.js-item-edit', event => {
+    let newName = prompt();
+    const itemId = getItemIdFromElement(event.currentTarget);
+    changeName(itemId , newName);
+    renderShoppingList();
+
+  });
+
+  
+}
 
 
 
@@ -173,6 +184,7 @@ function handleShoppingList() {
   handleToggleHideFilter();
   searchHandler();
   clearSearch();
+  editItemName();
 }
 
 // when the page loads, call `handleShoppingList`
